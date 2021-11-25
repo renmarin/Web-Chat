@@ -2,14 +2,14 @@ from datetime import datetime
 from django.utils import timezone
 
 from django.shortcuts import render, reverse
-from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.http import HttpResponseRedirect, Http404
 from django.contrib import messages
 from django.core.paginator import Paginator
 
 
 from django.views import View
 from .models import Chat
-from .forms import SignUpIn, Tok, DelaySend, ChooseRoom
+from .forms import SignUpIn, DelaySend, ChooseRoom
 
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -18,16 +18,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
 
-# todo  copy forms from older projects              +
-# todo  create html pages for reg/loging            +
-# todo  create view for reg/loging                  +
-# todo  implement token-based authentication:
-# https://simpleisbetterthancomplex.com/tutorial/2018/11/22/how-to-implement-token-authentication-using-django-rest-framework.html
-# todo  use token for accessing chat?:
-# https://hashnode.com/post/using-django-drf-jwt-authentication-with-django-channels-cjzy5ffqs0013rus1yb9huxvl
-
-
 class RegisterUser(View):
+
     def get(self, request):
         form = SignUpIn()
         self.context = {
@@ -48,7 +40,7 @@ class RegisterUser(View):
 class LogIn(View):
 
     def get(self, request):
-
+        # skip sign in page if user already authenticated
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('web_chat:choosechat'))
 
@@ -92,6 +84,7 @@ class ChooseChatRoom(APIView):
         return render(request, 'web_chat/choose_room.html', self.context)
 
     def post(self, requset):
+        # replace whitespaces in chat rooms names
         self.room = requset.POST['room'].replace(" ", "_")
         return HttpResponseRedirect(reverse('web_chat:chat', args=(self.room,)))
 
@@ -103,12 +96,14 @@ class ChatRoom(APIView):
     def get(self, request, room_name):
 
         username = request.session.get('username', 'Anon')
-        # messages = Chat.objects.all()
-        # hide future (delayed) messages
+
+        # hide future delayed messages in chat (show when time comes)
         messages = Chat.objects.messages = Chat.objects.filter(
             date__lte=timezone.now(),
             room=room_name,
         ).all()
+
+        # paginator with 10 messages per page
         messages_paginator = Paginator(messages, 10)
         page_num = request.GET.get('page')
         page = messages_paginator.get_page(page_num)
@@ -133,7 +128,6 @@ class ChatRoom(APIView):
                 username = 'Anon'
             else:
                 username = request.session.get('username', 'Anon')
-            # return HttpResponse(date_time)
             datetime_object = datetime.strptime(date_time, '%Y-%m-%d  %H:%M')
             if datetime_object < datetime.now():
                 messages.info(request, "Can't send message in past")

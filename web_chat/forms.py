@@ -21,12 +21,3 @@ class DelaySend(forms.Form):
                                widget=forms.Textarea(attrs={'placeholder': 'Message'}))
     CHOICES = [('Anon', 'Anon'), ('NotAnon', 'NotAnon')]
     anon = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
-
-    # date = forms.CharField(label="Date", max_length=25)
-    # time = forms.CharField(label="Time", max_length=25)
-    # message = forms.CharField(label="Message", max_length=500,
-    #                            widget=forms.TextInput(attrs={'placeholder': 'Message'}))
-
-
-class Tok(forms.Form):
-    token = forms.CharField(label="Token", max_length=250)

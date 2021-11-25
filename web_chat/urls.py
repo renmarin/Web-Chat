@@ -2,7 +2,6 @@ from django.urls import path
 from .views import ChatRoom, RegisterUser, LogIn, LogOut, ChooseChatRoom
 from rest_framework.authtoken.views import obtain_auth_token
 
-# from . import views
 
 app_name = 'web_chat'
 urlpatterns = [
