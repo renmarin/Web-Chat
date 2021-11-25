@@ -87,11 +87,9 @@ These settings are determined by the postgres Docker image specified in **docker
 
 At this point, your Django app should be running at port 8000 on your Docker host. On Docker Desktop for Mac and Docker Desktop for Windows, go to http://localhost:8000
 
-9. Use `sudo docker exec -ti [your_container] bash` to connect to container's terminal. To see your container id use `docker ps` command.
-
 ## Set up Django app
 
-1. Include the Web Chat URLconf in your project urls.py like this:
+1. Include the Web Chat URLconf in your project **urls.py** like this:
     ```
     from django.urls import include
     urlpatterns = [
@@ -99,6 +97,21 @@ At this point, your Django app should be running at port 8000 on your Docker hos
         path('api-auth/', include('rest_framework.urls')),
         path('', include('web_chat.urls')),
     ]
-    
-2.  Run "python manage.py migrate" to create the Web Chat models.
-3.  Visit http://127.0.0.1:8000
+2. Add imports and change application variable in your project **asgi.py**:
+        ```
+        from channels.routing import ProtocolTypeRouter, URLRouter
+        from channels.auth import AuthMiddlewareStack
+        import web_chat.routing
+        
+        application = ProtocolTypeRouter({
+          "http": get_asgi_application(),
+          "websocket": AuthMiddlewareStack(
+                URLRouter(
+                    web_chat.routing.websocket_urlpatterns
+                )
+            ),
+        })
+        
+3. Use `sudo docker exec -ti [your_container_id] bash` to connect to container's terminal. To see your container id use `docker ps` command. You'll need id of your_project_web image.
+4.  Run "python manage.py migrate" to create the Web Chat models.
+5.  Visit http://127.0.0.1:8000
