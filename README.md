@@ -63,7 +63,7 @@ These settings are determined by the postgres Docker image specified in **docker
 
 5. Add ASGI setting for running app as asynchronous:
 
-      `ASGI_APPLICATION = 'BDA.asgi.application'`
+      `ASGI_APPLICATION = 'webapp.asgi.application'`
 
 6. Change date and time settings:
 
