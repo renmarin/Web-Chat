@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+</head>
+<body style="text-align: center; padding: 5rem;">
+    <h1 class="title">Registration</h1>
+    <form action="{% url 'web_chat:registration' %}" method="post">
+        {% csrf_token %}
+        {% for field in SignUpIn %}
+            {{ field.label }}: <br>
+            {{ field }} <br>
+        {% endfor %}
+        <br>
+        <input class="button is-info" type="submit" value="Registration">
+        <a class="button is-info" href="{% url 'web_chat:login' %}">Back to Login</a>
+    </form>
+</body>
+</html>
