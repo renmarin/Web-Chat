@@ -2,7 +2,7 @@
 Service for discussing topics in chats
 
 # Prerequisites
-On your machine should be installed Docker and  to create application's work environment. You can use Docker Desktop on Mac and Windows, for Linux you need to install Docker Engine and Docker Compose. Guide how to install it:
+Docker should be installed on your machine to create a working environment for the application. You can use Docker Desktop on Mac and Windows, for Linux you need to install Docker Engine and Docker Compose. Guide how to install it:
 https://docs.docker.com/get-started/#download-and-install-docker .
 
 # How to run it
@@ -85,11 +85,9 @@ These settings are determined by the postgres Docker image specified in **docker
 
 8. Run the `sudo docker-compose up` command from the top level directory for your project.
 
-At this point, your Django app should be running at port 8000 on your Docker host. On Docker Desktop for Mac and Docker Desktop for Windows, go to http://localhost:8000
-
 ## Set up Django app
 
-1. Include the Web Chat URLconf in your project **urls.py** like this:
+1. Include the Web Chat URLconf in your project **webapp/urls.py** like this:
     ```
     from django.urls import include
     urlpatterns = [
@@ -97,7 +95,7 @@ At this point, your Django app should be running at port 8000 on your Docker hos
         path('api-auth/', include('rest_framework.urls')),
         path('', include('web_chat.urls')),
     ]
-2. Add imports and change application variable in your project **asgi.py**:
+2. Add imports and change application variable in your project **webapp/asgi.py** like this:
 
         ```
         from channels.routing import ProtocolTypeRouter, URLRouter
@@ -114,5 +112,5 @@ At this point, your Django app should be running at port 8000 on your Docker hos
         })
         
 3. Use `sudo docker exec -ti [your_container_id] bash` to connect to container's terminal. To see your container id use `docker ps` command. You'll need id of your_project_web image.
-4.  Run "python manage.py migrate" to create the Web Chat models.
+4.  Run `python manage.py migrate` to create the Web Chat models.
 5.  Visit http://127.0.0.1:8000
